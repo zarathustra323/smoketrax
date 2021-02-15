@@ -37,6 +37,10 @@ type User {
   lastLoggedInAt: Date @project
   "The timestamp (in milliseconds) when the user was last seen accessing the system."
   lastSeenAt: Date @project
+  "The timestamp (in milliseconds) when this user was created."
+  createdAt: Date @project
+  "The timestamp (in milliseconds) when this user was last updated."
+  updatedAt: Date @project
 }
 
 type UserAuth {

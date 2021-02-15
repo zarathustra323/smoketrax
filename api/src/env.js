@@ -6,6 +6,7 @@ const {
 } = require('envalid');
 
 module.exports = cleanEnv(process.env, {
+  DB_NAME: str({ desc: 'The primary database nane', default: 'smoketrax' }),
   HOST: str({ desc: 'The host that the service will run on.', default: '0.0.0.0' }),
   MONGO_URI: str({ desc: 'The MongoDB instance to connect to.' }),
   PORT: port({ desc: 'The port that the service will run on.', default: 80 }),

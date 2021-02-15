@@ -22,13 +22,6 @@ x-node-defaults: &node
     <<: *env
 
 services:
-  mongodb:
-    tty: true
-    image: mongo:4.0
-    volumes:
-      - mongodb:/data/db
-    ports:
-      - "44909:27017"
   api:
     <<: *node
     working_dir: /smoketrax/api
@@ -36,14 +29,42 @@ services:
     command: ["dev"]
     environment:
       <<: *env
-      MONGO_URI: ${MONGO_URI-mongodb://mongodb:27017}
+      APP_URL: ${APP_URL-http://0.0.0.0:44911}
+      MONGO_URI: ${MONGO_URI-mongodb://root:password123@mongodb-primary:27017,mongodb-secondary:27017/smoketrax?replicaSet=smoketrax&authSource=admin&readPreference=primary}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
       TOKEN_SECRET: ${TOKEN_SECRET-thisisntsecretandyoushouldusesomethingdifferentinproductiondawg}
     depends_on:
-      - mongodb
+      - mongodb-secondary
     ports:
       - "44910:44910"
 
+  mongodb-primary:
+    image: bitnami/mongodb:4.0
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=smoketrax
+    volumes:
+      - mongodb_primary:/bitnami
+    ports:
+      - "44901:27017"
+
+  mongodb-secondary:
+    image: bitnami/mongodb:4.0
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_PRIMARY_HOST=mongodb-primary
+      - MONGODB_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=smoketrax
+    volumes:
+      - mongodb_secondary:/bitnami
+
+
 volumes:
   yarn-cache: {}
-  mongodb: {}
+  mongodb_primary: {}
+  mongodb_secondary: {}

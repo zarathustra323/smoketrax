@@ -1,3 +1,4 @@
+const { typeProjection } = require('@parameter1/graphql-directive-project/utils');
 const sendMail = require('../../send-email');
 const { APP_URL, EMAIL_FROM } = require('../../env');
 
@@ -53,7 +54,28 @@ module.exports = {
   /**
    *
    */
+  UserAuth: {
+    /**
+     *
+     */
+    user({ userId }, _, { repos }, info) {
+      const options = { projection: typeProjection(info) };
+      return repos.user.findByObjectId({ id: userId, options });
+    },
+  },
+
+  /**
+   *
+   */
   Mutation: {
+    /**
+     *
+     */
+    async loginUserFromLink(_, { input }, { repos, ip, ua }) {
+      const { loginToken } = input;
+      return repos.user.magicLogin({ loginToken, ip, ua });
+    },
+
     /**
      *
      */

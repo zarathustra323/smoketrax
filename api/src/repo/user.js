@@ -1,5 +1,5 @@
 const { validateAsync } = require('@parameter1/joi/utils');
-const { isFunction: isFn } = require('@parameter1/utils');
+const { get, isFunction: isFn } = require('@parameter1/utils');
 const Joi = require('../joi');
 const PaginableRepo = require('./-paginable');
 const TokenRepo = require('./token');
@@ -128,6 +128,71 @@ class UserRepo extends PaginableRepo {
       options: Joi.object().default({}),
     }).required(), params);
     return this.findOne({ query: { email }, options });
+  }
+
+  /**
+   * @param {object} params
+   * @param {string} params.loginToken
+   * @param {string} [params.ip]
+   * @param {string} [params.ua]
+   */
+  async magicLogin(params = {}) {
+    const {
+      loginToken,
+      ip,
+      ua,
+    } = await validateAsync(Joi.object({
+      loginToken: Joi.string().trim().required(),
+      ip: userEventFields.ip,
+      ua: userEventFields.ua,
+    }).required(), params);
+
+    try {
+      const { doc } = await this.tokenRepo.verify({ token: loginToken, subject: 'login-link' });
+      const invalidateToken = get(doc, 'data.scope') !== 'invite';
+      const user = await this.findByObjectId({
+        id: doc.audience,
+        options: { projection: { _id: 1 }, strict: true },
+      });
+      const {
+        signed: authToken,
+        doc: authDoc,
+      } = await this.tokenRepo.getOrCreateAuthToken({ userId: user._id });
+      const now = new Date();
+      const $set = { verified: true, lastLoggedInAt: now, lastSeenAt: now };
+
+      const session = await this.client.startSession();
+      await session.withTransaction(async () => {
+        const event = {
+          userId: user._id,
+          action: 'magic-login',
+          date: now,
+          ip,
+          ua,
+          data: {
+            loginToken: { doc, value: loginToken },
+            authToken: { doc: authDoc, value: authToken },
+          },
+        };
+        await Promise.all([
+          ...(invalidateToken ? [
+            this.tokenRepo.invalidate({ id: doc._id, options: { session } }),
+          ] : []),
+          this.userEventRepo.create({ payload: event, options: { session } }),
+          this.updateOne({
+            query: { _id: user._id },
+            update: { $set, $inc: { loginCount: 1 } },
+            options: { session },
+          }),
+        ]);
+      });
+
+      session.endSession();
+      return { authToken, userId: user._id };
+    } catch (e) {
+      e.message = `Unable to login: ${e.message}`;
+      throw e;
+    }
   }
 }
 

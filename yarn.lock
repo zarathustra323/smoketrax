@@ -1041,6 +1041,13 @@
   dependencies:
     "@octokit/openapi-types" "^4.0.3"
 
+"@parameter1/email-utils@^1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@parameter1/email-utils/-/email-utils-1.0.15.tgz#9952464df0f914e3708fe5679a52a7dc61d08d40"
+  integrity sha512-lB2kPV9lkLk84edczmKXDNRUepbNWVTFdBQccgoPjY8yXY0EXBZnCLsudYiNbPqOECpiyrPodmXqgns7JEvytA==
+  dependencies:
+    burner-email-providers "^1.0.38"
+
 "@parameter1/graphql-directive-project@^1.0.14":
   version "1.0.14"
   resolved "https://registry.yarnpkg.com/@parameter1/graphql-directive-project/-/graphql-directive-project-1.0.14.tgz#3fcfc381316f7ec8ea6aa4afe74df2c689944a32"
@@ -2142,6 +2149,11 @@ builtins@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/builtins/-/builtins-1.0.3.tgz#cb94faeb61c8696451db36534e1422f94f0aee88"
   integrity sha1-y5T662HIaWRR2zZTThQi+U8K7og=
+
+burner-email-providers@^1.0.38:
+  version "1.0.38"
+  resolved "https://registry.yarnpkg.com/burner-email-providers/-/burner-email-providers-1.0.38.tgz#a08a9c464d0c74f31a699f6dad874d5f66d0851d"
+  integrity sha512-h8PI1NZkgYi2pYJmuaDytf6TWGFLaux3+uP/goneqXRq7SpNdfRP2MBCAfVXekJVORYPncMTCsZB9PjSqodjgQ==
 
 busboy@^0.3.1:
   version "0.3.1"

@@ -37,6 +37,7 @@ services:
     environment:
       <<: *env
       MONGO_URI: ${MONGO_URI-mongodb://mongodb:27017}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
       TOKEN_SECRET: ${TOKEN_SECRET-thisisntsecretandyoushouldusesomethingdifferentinproductiondawg}
     depends_on:
       - mongodb

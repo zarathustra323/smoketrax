@@ -12,5 +12,6 @@ module.exports = cleanEnv(process.env, {
   PORT: port({ desc: 'The port that the service will run on.', default: 80 }),
   NEW_RELIC_ENABLED: bool({ desc: 'Whether New Relic is enabled.', default: true, devDefault: false }),
   NEW_RELIC_LICENSE_KEY: str({ desc: 'The license key for New Relic.', default: '' }),
+  SENDGRID_API_KEY: str({ desc: 'The Sendgrid API key for sending email.' }),
   TOKEN_SECRET: str({ desc: 'The secret for signing JWTs' }),
 });

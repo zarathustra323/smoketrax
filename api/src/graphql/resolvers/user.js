@@ -79,6 +79,19 @@ module.exports = {
     /**
      *
      */
+    async logoutUser(_, __, {
+      repos,
+      ip,
+      ua,
+      auth,
+    }) {
+      await repos.user.logout({ authToken: auth.token, ip, ua });
+      return 'ok';
+    },
+
+    /**
+     *
+     */
     async registerUser(_, { input }, {
       repos,
       ip,

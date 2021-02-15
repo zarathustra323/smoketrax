@@ -132,6 +132,49 @@ class UserRepo extends PaginableRepo {
 
   /**
    * @param {object} params
+   * @param {string} params.authToken
+   * @param {string} [params.ip]
+   * @param {string} [params.ua]
+   */
+  async logout(params = {}) {
+    const { authToken, ip, ua } = await validateAsync(Joi.object({
+      authToken: Joi.string().trim().required(),
+      ip: userEventFields.ip,
+      ua: userEventFields.ua,
+    }).required(), params);
+
+    const { doc, signed: token } = await this.tokenRepo.verify({ token: authToken, subject: 'auth' });
+    const { audience: userId } = doc;
+
+    const event = {
+      userId,
+      action: 'logout',
+      ip,
+      ua,
+      data: { authToken: { doc, value: token } },
+    };
+
+    const session = await this.client.startSession();
+    await session.withTransaction(async () => {
+      await Promise.all([
+        this.tokenRepo.invalidate({ id: doc._id, options: { session } }),
+        this.userEventRepo.create({
+          payload: event,
+          options: { session },
+        }),
+        this.updateOne({
+          query: { _id: userId },
+          update: { $set: { lastSeenAt: new Date() } },
+          options: { session },
+        }),
+      ]);
+    });
+    session.endSession();
+    return 'ok';
+  }
+
+  /**
+   * @param {object} params
    * @param {string} params.loginToken
    * @param {string} [params.ip]
    * @param {string} [params.ua]

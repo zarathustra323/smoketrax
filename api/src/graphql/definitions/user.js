@@ -10,7 +10,7 @@ extend type Mutation {
   "Sends a magic login link to a user. The user must already exist."
   sendUserLoginLink(input: SendUserLoginLinkMutationInput!): String!
   "Logs out the currently logged-in user."
-  logoutUser: String!
+  logoutUser: String! @auth
 }
 
 type User {

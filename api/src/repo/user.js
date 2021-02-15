@@ -44,7 +44,7 @@ class UserRepo extends PaginableRepo {
       options: Joi.object().default({}),
     }).required(), params);
     const { email, givenName, familyName } = payload;
-    return super.insertOne({
+    return this.insertOne({
       doc: {
         email,
         givenName,
@@ -114,6 +114,20 @@ class UserRepo extends PaginableRepo {
     });
     session.endSession();
     return signed;
+  }
+
+  /**
+   *
+   * @param {object} params
+   * @param {string} params.email
+   * @param {object} [params.options]
+   */
+  async findByEmail(params = {}) {
+    const { email, options } = await validateAsync(Joi.object({
+      email: fields.email.required(),
+      options: Joi.object().default({}),
+    }).required(), params);
+    return this.findOne({ query: { email }, options });
   }
 }
 

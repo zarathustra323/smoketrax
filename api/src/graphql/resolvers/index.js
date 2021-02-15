@@ -4,11 +4,13 @@ const GraphQLDate = require('@parameter1/graphql-type-date');
 const GraphQLObjectID = require('@parameter1/graphql-type-objectid');
 const pagination = require('@parameter1/graphql-mongodb-pagination/resolvers');
 
+const smokeLog = require('./smoke-log');
 const user = require('./user');
 
 module.exports = merge(
   pagination,
 
+  smokeLog,
   user,
 
   {

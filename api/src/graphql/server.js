@@ -4,16 +4,11 @@ const { get, set } = require('@parameter1/utils');
 const depthLimit = require('graphql-depth-limit');
 const schema = require('./schema');
 const { isProduction } = require('../env');
-const repos = require('../repo');
+const context = require('./context');
 
 module.exports = ({ app, path }) => {
   const server = new ApolloServer({
-    context: ({ req }) => ({
-      req,
-      repos,
-      ip: req.ip,
-      ua: req.get('user-agent'),
-    }),
+    context,
     schema,
     tracing: false,
     cacheControl: false,

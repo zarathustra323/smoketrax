@@ -194,6 +194,33 @@ class UserRepo extends PaginableRepo {
       throw e;
     }
   }
+
+  /**
+   * @param {object} params
+   * @param {string} params.token
+   * @param {object} [params.options]
+   */
+  async verifyBearerAuth(params = {}) {
+    const { token, options } = await validateAsync(Joi.object({
+      token: Joi.string().trim().required(),
+      options: Joi.object().default({}),
+    }).required(), params);
+    try {
+      const { doc } = await this.tokenRepo.verify({ token, subject: 'auth' });
+      const { audience: userId } = doc;
+      await this.updateOne({
+        query: { _id: userId },
+        update: { $set: { lastSeenAt: new Date() } },
+      });
+      const user = await this.findByObjectId({
+        id: userId,
+        options: { ...options, strict: true },
+      });
+      return user;
+    } catch (e) {
+      throw PaginableRepo.createError(401, `Authentication failed: ${e.message}`);
+    }
+  }
 }
 
 module.exports = UserRepo;

@@ -7,6 +7,7 @@ const user = require('./user');
 module.exports = gql`
 
 ${projectDirectives.typeDefs}
+directive @auth on FIELD_DEFINITION
 
 scalar Date
 scalar ObjectID

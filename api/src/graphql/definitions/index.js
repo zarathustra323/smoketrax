@@ -2,7 +2,6 @@ const { gql } = require('apollo-server-express');
 const projectDirectives = require('@parameter1/graphql-directive-project/directives');
 const pagination = require('@parameter1/graphql-mongodb-pagination/definitions');
 
-const locale = require('./locale');
 const user = require('./user');
 
 module.exports = gql`
@@ -24,7 +23,6 @@ type Mutation {
   ping: String!
 }
 
-${locale}
 ${user}
 
 `;

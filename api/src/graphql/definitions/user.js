@@ -22,13 +22,9 @@ type User {
   givenName: String! @project
   "The user's family/last name."
   familyName: String! @project
-  "The user's region (i.e. state or province)"
-  region: LocaleRegion @project(field: "regionCode", needs: ["countryCode"])
-  "The user's country."
-  country: LocaleCountry! @project(field: "countryCode")
   "The user's full name."
   name: String @project
-  "Whether the user email address has been verified."
+  "Whether the user has been verified via email."
   verified: Boolean! @project
   "The number of times the user has logged in."
   loginCount: Int! @project
@@ -55,10 +51,6 @@ input RegisterUserMutationInput {
   givenName: String!
   "The user's family/last name."
   familyName: String!
-  "The user's alpha-2 country code."
-  countryCode: String!
-  "The user's region code."
-  regionCode: String
   "A location to redirect the user to after successful authentication."
   redirectTo: String
 }

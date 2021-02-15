@@ -38,6 +38,13 @@ module.exports = {
     /**
      *
      */
+    name(user) {
+      return `${user.givenName} ${user.familyName}`;
+    },
+
+    /**
+     *
+     */
     verified(user) {
       return user.verified || false;
     },

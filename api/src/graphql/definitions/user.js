@@ -3,14 +3,14 @@ const { gql } = require('apollo-server-express');
 module.exports = gql`
 
 extend type Mutation {
-  "Registers a new user."
-  registerUser(input: RegisterUserMutationInput!): User!
   "Logs a user in via a magic login link token."
   loginUserFromLink(input: LoginUserFromLinkMutationInput!): UserAuth!
-  "Sends a magic login link to a user. The user must already exist."
-  sendUserLoginLink(input: SendUserLoginLinkMutationInput!): String!
   "Logs out the currently logged-in user."
   logoutUser: String! @auth
+  "Registers a new user."
+  registerUser(input: RegisterUserMutationInput!): User!
+  "Sends a magic login link to a user. The user must already exist."
+  sendUserLoginLink(input: SendUserLoginLinkMutationInput!): String!
 }
 
 type User {

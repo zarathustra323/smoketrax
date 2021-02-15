@@ -139,7 +139,7 @@ class TokenRepo extends Repo {
    * @param {object} payload
    */
   static sign(payload) {
-    return jwt.sign(payload, ECOSYSTEM_TOKEN_SECRET);
+    return jwt.sign(payload, TOKEN_SECRET);
   }
 }
 

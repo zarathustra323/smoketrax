@@ -140,4 +140,18 @@ module.exports = {
       return 'ok';
     },
   },
+
+  /**
+   *
+   */
+  Query: {
+    /**
+     *
+     */
+    currentUser(_, __, { repos, auth }, info) {
+      const id = auth.getUserId();
+      const options = { projection: typeProjection(info) };
+      return repos.user.findByObjectId({ id, options });
+    },
+  },
 };

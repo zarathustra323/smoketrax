@@ -2,6 +2,11 @@ const { gql } = require('apollo-server-express');
 
 module.exports = gql`
 
+extend type Query {
+  "Returns the currently logged-in user. Will return an authentication error if no user is logged-in."
+  currentUser: User! @auth
+}
+
 extend type Mutation {
   "Logs a user in via a magic login link token."
   loginUserFromLink(input: LoginUserFromLinkMutationInput!): UserAuth!

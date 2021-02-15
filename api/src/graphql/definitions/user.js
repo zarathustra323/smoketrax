@@ -30,6 +30,8 @@ type User {
   loginCount: Int! @project
   "The timestamp (in milliseconds) when the user last logged in."
   lastLoggedInAt: Date @project
+  "The timestamp (in milliseconds) when the user was last seen accessing the system."
+  lastSeenAt: Date @project
 }
 
 type UserAuth {
